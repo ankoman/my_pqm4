@@ -223,6 +223,7 @@ void __attribute__ ((noinline)) indcpa_dec(unsigned char *m,
     int32_t r_tmp[KYBER_N];
     int i;
 
+    //NTT(Decomp(u')) * s
     poly_unpackdecompress(&mp, c, 0);
     poly_ntt(&mp);
     poly_frombytes_mul_16_32(r_tmp, &mp, sk);
@@ -235,10 +236,12 @@ void __attribute__ ((noinline)) indcpa_dec(unsigned char *m,
     poly_ntt(&bp);
     poly_frombytes_mul_32_16(&mp, &bp, sk + i*KYBER_POLYBYTES, r_tmp);
 
+    //v' - INTT(u'*s)
     poly_invntt(&mp);
     poly_decompress(v, c+KYBER_POLYVECCOMPRESSEDBYTES);
     poly_sub(&mp, v, &mp);
     poly_reduce(&mp);
 
+    //Decode(mp)
     poly_tomsg(m, &mp);
 }

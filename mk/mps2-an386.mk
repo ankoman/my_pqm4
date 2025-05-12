@@ -34,7 +34,6 @@ LDFLAGS += \
 	-Wl,--wrap=_write \
 	-Wl,--wrap=_fstat \
 	-Wl,--wrap=_getpid \
-	-Wl,--no-warn-rwx-segments \
 	-ffreestanding \
 	-T$(LDSCRIPT) \
 	$(ARCH_FLAGS)

@@ -16,5 +16,6 @@ int crypto_kem_enc(unsigned char *ct, unsigned char *ss, const unsigned char *pk
 
 int crypto_kem_dec(unsigned char *ss, const unsigned char *ct, const unsigned char *sk);
 
+int crypto_kem_ct_check( const unsigned char *ct, const unsigned char *sk);
 
 #endif

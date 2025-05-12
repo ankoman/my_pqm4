@@ -4,6 +4,7 @@
 #include "randombytes.h"
 #include "symmetric.h"
 #include "verify.h"
+#include "poly.h"
 
 #include <stdlib.h>
 
@@ -154,6 +155,28 @@ int crypto_kem_dec(unsigned char *ss, const unsigned char *ct, const unsigned ch
 
     /* Copy true key to return buffer if fail is false */
     cmov(ss, kr, KYBER_SYMBYTES, (uint8_t) (1 - fail));
+
+    return 0;
+}
+
+int crypto_kem_ct_check( const unsigned char *ct, const unsigned char *sk) {
+    char buf1[100];
+    /* Will contain key, coins */
+    const uint8_t *pk = sk + KYBER_INDCPA_SECRETKEYBYTES;
+
+    poly poly0;
+    int i, j, k, z;
+
+    for(i = 0; i < KYBER_K; i++) {
+        poly_unpackdecompress(&poly0, ct, 0);    // First polynomial of u
+        for (z = 0; z < KYBER_N; z++) {
+            if (poly0.coeffs[z] == 0) {
+                sprintf(buf1, "Zero coeff detected: %d", poly0.coeffs[z]);
+                hal_send_str(buf1);
+                z++;
+            }
+        }
+    }
 
     return 0;
 }
